@@ -44,11 +44,10 @@ public class RedisWorker {
         redisImpl = new RedisImpl(client);
     }
 
-    public CompletableFuture<Void> sendMessage(@NotNull Request request) {
-        return CompletableFuture.runAsync(() -> {
-            redisImpl.getConnectionAsync(c -> c.publish(Messenger.NETWORK_MESSAGE_CHANNEL, request.toJson()));
-
-        });
+    public CompletableFuture<Long> sendMessage(@NotNull Request request) {
+        return redisImpl
+                .getConnectionAsync(c -> c.publish(Messenger.NETWORK_MESSAGE_CHANNEL, request.toJson()))
+                .toCompletableFuture();
     }
 
     /**
